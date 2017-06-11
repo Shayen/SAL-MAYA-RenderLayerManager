@@ -9,25 +9,33 @@ class renderLayerMan_UI(object):
 		pass
 
 	def delete_renderLayer( self, name='', *args ):
+		''' Delete selected render layer '''
+		
+		#Check is this render layer in use?
 		try :
 			cmds.delete(name)
 		except :
+			#Change button to RED and show 'this layer is in use'
 			cmds.button('button_delete_' + name, e = True, l = 'layer is in used.', backgroundColor = (1,0,0) , en = False )
 			cmds.error('Render layer ' + name + ' is in use.' )
+			
 		print( '>> ' + name + ' was delete.' )
+		
+		#Update list after delete
 		self.update_layerList()
 
 	def update_layerList( self ):
-		''' Description '''
-
+		''' refresh render layer list '''
+		
+		#get all child of form and delete
 		for child in cmds.formLayout( 'renderLayerman_mainForm' , q=True, ca=True ) or [] :
 			cmds.deleteUI( child )
 		cmds.setParent( 'renderLayerman_mainForm' )
-
+		
+		#create new layer's list
 		new_row = cmds.rowColumnLayout( numberOfColumns = 5, rs= (1,3), columnWidth = [ (1,10),(2,25),(3, 150), (4, 5), (5, 100) ] )
 		for renderLayer in cmds.ls( type = 'renderLayer' ):
 			button_en = True
-			#print renderLayer
 
 			if 'defaultRenderLayer' in renderLayer :
 				button_en = False
@@ -48,15 +56,14 @@ class renderLayerMan_UI(object):
 
 	def Button_ok_onClick( self, *args ) :
 		''' description '''
-
+		
+		#Close app
 		cmds.deleteUI( 'renderLayerMan' )
 
 	def Button_focus_onclick(self, name, *args):
 		''' description '''
-
-		#--------------------------------
-		#cmds.select(name)
-
+		
+		#Focus layer's attribute editor
 		mel.eval ( ' showEditorExact(" ' + name + ' ") ' )
 		print ('>> select \''+ name +'\'')
 
@@ -64,13 +71,14 @@ class renderLayerMan_UI(object):
 	def Button_setting_onClick( self, name, *args):
 		''' Description '''
 
+		#Show up Render setting editor of layer
 		cmds.editRenderLayerGlobals( currentRenderLayer = name )
 		cmds.showWindow('unifiedRenderGlobalsWindow')
 
 	def showUI( self ):
-		''' Description '''
+		''' Create UI '''
 
-		#Delete Ould UI
+		#Check and Delete Old UI
 		if cmds.window( 'renderLayerMan', ex= True ) :
 			cmds.deleteUI( 'renderLayerMan' )
 
@@ -89,6 +97,7 @@ class renderLayerMan_UI(object):
 		cmds.formLayout ( 'renderLayerman_mainForm' )
 
 		self.update_layerList() 
+		
 		cmds.setParent('..')
 		cmds.button( l = 'OK', command = self.Button_ok_onClick )
 		cmds.separator(h=10)
