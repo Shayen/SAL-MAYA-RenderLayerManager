@@ -3,7 +3,7 @@ import maya.mel as mel
 
 class renderLayerMan_UI(object):
 
-	_AppVersion_ = '1.0B'
+	_AppVersion_ = '1.1'
 
 	def __init__(self):
 		pass
@@ -73,7 +73,7 @@ class renderLayerMan_UI(object):
 
 		#Show up Render setting editor of layer
 		cmds.editRenderLayerGlobals( currentRenderLayer = name )
-		cmds.showWindow('unifiedRenderGlobalsWindow')
+		mel.eval("unifiedRenderGlobalsWindow;")
 
 	def showUI( self ):
 		''' Create UI '''
