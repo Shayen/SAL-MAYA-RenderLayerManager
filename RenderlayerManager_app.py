@@ -36,6 +36,9 @@ class renderLayerMan_UI(object):
 		new_row = cmds.rowColumnLayout( numberOfColumns = 5, rs= (1,3), columnWidth = [ (1,10),(2,25),(3, 150), (4, 5), (5, 100) ] )
 		for renderLayer in cmds.ls( type = 'renderLayer' ):
 			button_en = True
+						
+			if cmds.referenceQuery(renderLayer,inr=True):
+				continue
 
 			if 'defaultRenderLayer' in renderLayer :
 				button_en = False
